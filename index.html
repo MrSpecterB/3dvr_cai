@@ -1,96 +1,1322 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
-  </head>
-  <body>
-    <h1>Vercel HTML Starter</h1>
-    <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
-    </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-  </body>
-</html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3DVR Portal - Entorno Operativo Descentralizado</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gun/0.2020.1235/gun.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gun/0.2020.1235/sea.min.js"></script>
+    
+    <style>
+        /* ========== RESET Y VARIABLES ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-bg: #1e2a38;
+            --secondary-bg: #2a3b4d;
+            --accent-bg: #34495e;
+            --primary-gold: #ffd700;
+            --secondary-gold: #ffed4e;
+            --text-light: #ffffff;
+            --text-muted: #bdc3c7;
+            --border-color: #34495e;
+            --shadow: rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== ESTILOS BASE ========== */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary-bg) 0%, var(--secondary-bg) 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ========== ANIMACIONES Y EFECTOS ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Nubes flotantes decorativas */
+        .floating-clouds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cloud:nth-child(1) {
+            width: 100px;
+            height: 60px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .cloud:nth-child(2) {
+            width: 80px;
+            height: 40px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .cloud:nth-child(3) {
+            width: 120px;
+            height: 70px;
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        /* ========== HEADER Y NAVEGACIÓN ========== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(30, 42, 56, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--primary-gold);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo::before {
+            content: "🌐";
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-item a:hover,
+        .nav-item a.active {
+            color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .nav-item a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gold);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-item a.active::after {
+            width: 80%;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-gold);
+            color: var(--primary-bg);
+        }
+
+        .btn-primary:hover {
+            background: var(--secondary-gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary-gold);
+            border: 2px solid var(--primary-gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-gold);
+            color: var(--primary-bg);
+        }
+
+        /* ========== CONTENIDO PRINCIPAL ========== */
+        .main-content {
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+            position: relative;
+            z-index: 10;
+        }
+
+        .section {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* ========== SECCIÓN HOME ========== */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-gold);
+            box-shadow: 0 10px 30px var(--shadow);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-gold), var(--secondary-gold));
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        /* ========== SECCIONES ESPECÍFICAS ========== */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .placeholder-content {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 3rem;
+            text-align: center;
+            border: 2px dashed var(--border-color);
+            margin: 2rem 0;
+        }
+
+        .placeholder-content h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .placeholder-content p {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        /* ========== NOTAS - ESTRUCTURA JERÁRQUICA ========== */
+        .notes-sidebar {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .folder-tree {
+            list-style: none;
+        }
+
+        .folder-item {
+            margin: 0.5rem 0;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .folder-item:hover {
+            background: var(--accent-bg);
+        }
+
+        .folder-item.active {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+        }
+
+        /* ========== CHAT - INTERFAZ DE MENSAJERÍA ========== */
+        .chat-container {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .message {
+            background: var(--accent-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--primary-gold);
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 1rem;
+            gap: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            background: var(--accent-bg);
+            color: var(--text-light);
+        }
+
+        /* ========== TAREAS - KANBAN BOARD ========== */
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .kanban-column {
+            background: var(--secondary-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            min-height: 400px;
+        }
+
+        .kanban-header {
+            color: var(--primary-gold);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            text-align: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .task-card {
+            background: var(--accent-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            cursor: grab;
+            transition: var(--transition);
+            border-left: 3px solid var(--primary-gold);
+        }
+
+        .task-card:hover {
+            transform: translateX(5px);
+        }
+
+        /* ========== MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background: var(--secondary-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            border: 2px solid var(--primary-gold);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--accent-bg);
+            color: var(--text-light);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        /* ========== RESPONSIVE DESIGN ========== */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background: var(--primary-bg);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding-top: 2rem;
+                transition: var(--transition);
+            }
+
+            .nav-menu.active {
+                left: 0;
+                animation: slideIn 0.3s ease-out;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .auth-buttons {
+                position: absolute;
+                top: 100px;
+                right: 1rem;
+                flex-direction: column;
+                width: 200px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+        }
+
+        /* ========== UTILIDADES ========== */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 2rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Nubes flotantes decorativas -->
+    <div class="floating-clouds">
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+        <div class="cloud"></div>
+    </div>
+
+    <!-- ========== HEADER Y NAVEGACIÓN ========== -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">3DVR Portal</a>
+            
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="#home" class="nav-link active">Inicio</a></li>
+                <li class="nav-item"><a href="#notes" class="nav-link">Notas</a></li>
+                <li class="nav-item"><a href="#chat" class="nav-link">Chat</a></li>
+                <li class="nav-item"><a href="#tasks" class="nav-link">Tareas</a></li>
+                <li class="nav-item"><a href="#hub" class="nav-link">Hub</a></li>
+                <li class="nav-item"><a href="#profile" class="nav-link">Perfil</a></li>
+            </ul>
+
+            <div class="auth-buttons" id="authButtons">
+                <button class="btn btn-secondary" onclick="openModal('login')">Iniciar Sesión</button>
+                <button class="btn btn-primary" onclick="openModal('register')">Registrarse</button>
+            </div>
+
+            <div class="user-info hidden" id="userInfo">
+                <span id="userName">Usuario</span>
+                <button class="btn btn-secondary" onclick="logout()">Salir</button>
+            </div>
+
+            <button class="mobile-toggle" id="mobileToggle">☰</button>
+        </nav>
+    </header>
+
+    <!-- ========== CONTENIDO PRINCIPAL ========== -->
+    <main class="main-content">
+        <!-- SECCIÓN HOME -->
+        <section id="home" class="section active">
+            <div class="hero animate-fade-in">
+                <h1>Bienvenido a 3DVR Portal</h1>
+                <p>Entorno operativo descentralizado, suite creativa basada en navegador, orientada a la privacidad para creadores, pequeñas empresas y tecnólogos.</p>
+                <button class="btn btn-primary animate-float" onclick="openModal('register')">
+                    Comenzar Ahora
+                </button>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card animate-fade-in">
+                    <span class="feature-icon">📝</span>
+                    <h3>Notas Descentralizadas</h3>
+                    <p>Organiza tus ideas con carpetas jerárquicas colapsables. Sincronización automática y privacidad garantizada.</p>
+                </div>
+                
+                <div class="feature-card animate-fade-in">
+                    <span class="feature-icon">💬</span>
+                    <h3>Chat en Tiempo Real</h3>
+                    <p>Comunicación grupal descentralizada con sincronización instantánea usando Gun.js.</p>
+                </div>
+                
+                <div class="feature-card animate-fade-in">
+                    <span class="feature-icon">✅</span>
+                    <h3>Gestión de Tareas</h3>
+                    <p>Tablero Kanban colaborativo para organizar proyectos y flujos de trabajo.</p>
+                </div>
+                
+                <div class="feature-card animate-fade-in">
+                    <span class="feature-icon">🎮</span>
+                    <h3>Hub de Aplicaciones</h3>
+                    <p>Ecosistema de juegos y aplicaciones HTML integradas.</p>
+                </div>
+                
+                <div class="feature-card animate-fade-in">
+                    <span class="feature-icon">🔒</span>
+                    <h3>Privacidad Total</h3>
+                    <p>Autenticación descentralizada sin servidores centrales.</p>
+                </div>
+                
+                <div class="feature-card animate-fade-in">
+                    <span class="feature-icon">📱</span>
+                    <h3>Multi-Dispositivo</h3>
+                    <p>Sincronización perfecta entre móvil y escritorio.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN NOTAS -->
+        <section id="notes" class="section">
+            <div class="section-header">
+                <h2>📝 Notas Personales</h2>
+                <p>Organiza tus ideas con estructura jerárquica</p>
+            </div>
+
+            <div class="notes-sidebar">
+                <h3 style="color: var(--primary-gold); margin-bottom: 1rem;">📁 Carpetas</h3>
+                <ul class="folder-tree">
+                    <li class="folder-item active">📂 Proyectos</li>
+                    <li class="folder-item">📂 Ideas</li>
+                    <li class="folder-item">📂 Reuniones</li>
+                    <li class="folder-item">📂 Personal</li>
+                </ul>
+            </div>
+
+            <div class="placeholder-content">
+                <h3>Editor de Notas</h3>
+                <p>Próximamente: Editor rich-text con soporte para markdown, sincronización en tiempo real y organización por carpetas colapsables.</p>
+                <button class="btn btn-primary">Crear Nueva Nota</button>
+            </div>
+        </section>
+
+        <!-- SECCIÓN CHAT -->
+        <section id="chat" class="section">
+            <div class="section-header">
+                <h2>💬 Chat Grupal</h2>
+                <p>Comunicación en tiempo real descentralizada</p>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message">
+                        <strong style="color: var(--primary-gold);">Sistema:</strong>
+                        <p>Bienvenido al chat descentralizado de 3DVR Portal</p>
+                    </div>
+                    <div class="message">
+                        <strong style="color: var(--primary-gold);">Demo User:</strong>
+                        <p>¡Hola! Esta es una demostración del sistema de chat.</p>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Escribe tu mensaje..." id="messageInput">
+                    <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN TAREAS -->
+        <section id="tasks" class="section">
+            <div class="section-header">
+                <h2>✅ Gestión de Tareas</h2>
+                <p>Tablero Kanban colaborativo</p>
+            </div>
+
+            <div class="kanban-board">
+                <div class="kanban-column">
+                    <div class="kanban-header">📋 Por Hacer</div>
+                    <div class="task-card">
+                        <h4>Implementar autenticación</h4>
+                        <p>Configurar Gun.js SEA para login seguro</p>
+                    </div>
+                    <div class="task-card">
+                        <h4>Diseñar UI móvil</h4>
+                        <p>Optimizar interfaz para dispositivos móviles</p>
+                    </div>
+                </div>
+                
+                <div class="kanban-column">
+                    <div class="kanban-header">🔄 En Progreso</div>
+                    <div class="task-card">
+                        <h4>Sistema de notas</h4>
+                        <p>Desarrollo del editor rich-text</p>
+                    </div>
+                </div>
+                
+                <div class="kanban-column">
+                    <div class="kanban-header">✅ Completado</div>
+                    <div class="task-card">
+                        <h4>Estructura base</h4>
+                        <p>HTML/CSS/JS foundation completada</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN HUB -->
+        <section id="hub" class="section">
+            <div class="section-header">
+                <h2>🎮 Hub de Aplicaciones</h2>
+                <p>Juegos y herramientas integradas</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Mini Juegos</h3>
+                    <p>Colección de juegos HTML5 integrados</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🛠️</span>
+                    <h3>Herramientas</h3>
+                    <p>Calculadoras, convertidores y utilidades</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎨</span>
+                    <h3>Creative Suite</h3>
+                    <p>Editores de imagen y diseño básico</p>
+                </div>
+            </div>
+
+            <div class="placeholder-content mt-2">
+                <h3>Aplicaciones Disponibles</h3>
+                <p>Próximamente: Hub completo con aplicaciones web integradas, desde juegos hasta herramientas de productividad.</p>
+            </div>
+        </section>
+
+        <!-- SECCIÓN PERFIL -->
+        <section id="profile" class="section">
+            <div class="section-header">
+                <h2>👤 Perfil de Usuario</h2>
+                <p>Configuración y preferencias</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">⚙️</span>
+                    <h3>Configuración</h3>
+                    <p>Personaliza tu experiencia en 3DVR Portal</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🔐</span>
+                    <h3>Seguridad</h3>
+                    <p>Gestión de claves y autenticación descentralizada</p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">☁️</span>
+                    <h3>Sincronización</h3>
+                    <p>Estado de sincronización entre dispositivos</p>
+                </div>
+            </div>
+
+            <div class="placeholder-content mt-2">
+                <h3>Panel de Usuario</h3>
+                <p>Próximamente: Configuración completa de perfil, avatar, preferencias de sincronización y gestión de suscripciones.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- ========== MODAL DE AUTENTICACIÓN ========== -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <div id="loginForm">
+                <h2 style="color: var(--primary-gold); text-align: center; margin-bottom: 2rem;">Iniciar Sesión</h2>
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Usuario</label>
+                        <input type="text" id="loginUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Contraseña</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Ingresar</button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; color: var(--text-muted);">
+                    ¿Ya tienes cuenta? <a href="#" onclick="showLogin()" style="color: var(--primary-gold);">Inicia sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== JAVASCRIPT - FUNCIONALIDAD PRINCIPAL ========== -->
+    <script>
+        // ========== CONFIGURACIÓN GLOBAL Y VARIABLES ========== 
+        let gun, user, currentUser = null;
+        
+        // Inicializar Gun.js
+        function initGun() {
+            gun = Gun(['https://gun-manhattan.herokuapp.com/gun']);
+            user = gun.user().recall({sessionStorage: true});
+            
+            // Verificar si hay usuario autenticado
+            user.get('alias').on(function(data, key){
+                if(data){
+                    currentUser = data;
+                    updateAuthUI(true);
+                }
+            });
+        }
+
+        // ========== NAVEGACIÓN SPA ========== 
+        function initNavigation() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    showSection(targetId);
+                    
+                    // Actualizar estado activo en navegación
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                    
+                    // Cerrar menú móvil si está abierto
+                    closeMobileMenu();
+                });
+            });
+        }
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // Inicializar funcionalidad específica de la sección
+                if (sectionId === 'chat') {
+                    initChat();
+                } else if (sectionId === 'tasks') {
+                    initKanban();
+                }
+            }
+        }
+
+        // ========== NAVEGACIÓN MÓVIL ========== 
+        function initMobileNavigation() {
+            const mobileToggle = document.getElementById('mobileToggle');
+            const navMenu = document.getElementById('navMenu');
+            
+            mobileToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+            });
+            
+            // Cerrar menú al hacer clic fuera
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-container')) {
+                    closeMobileMenu();
+                }
+            });
+        }
+
+        function closeMobileMenu() {
+            const navMenu = document.getElementById('navMenu');
+            navMenu.classList.remove('active');
+        }
+
+        // ========== SISTEMA DE MODALES ========== 
+        function openModal(type) {
+            const modal = document.getElementById('authModal');
+            modal.classList.add('active');
+            
+            if (type === 'login') {
+                showLogin();
+            } else if (type === 'register') {
+                showRegister();
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.remove('active');
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('authModal').addEventListener('click', (e) => {
+            if (e.target.id === 'authModal') {
+                closeModal();
+            }
+        });
+
+        // ========== AUTENTICACIÓN CON GUN.JS ========== 
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            user.auth(username, password, (ack) => {
+                if (ack.err) {
+                    alert('Error de autenticación: ' + ack.err);
+                } else {
+                    currentUser = username;
+                    updateAuthUI(true);
+                    closeModal();
+                    showNotification('¡Bienvenido de vuelta!', 'success');
+                }
+            });
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            user.create(username, password, (ack) => {
+                if (ack.err) {
+                    alert('Error en el registro: ' + ack.err);
+                } else {
+                    // Auto-login después del registro
+                    user.auth(username, password, (ack) => {
+                        if (!ack.err) {
+                            // Guardar información adicional del usuario
+                            user.get('profile').put({
+                                email: email,
+                                created: new Date().toISOString()
+                            });
+                            
+                            currentUser = username;
+                            updateAuthUI(true);
+                            closeModal();
+                            showNotification('¡Cuenta creada exitosamente!', 'success');
+                        }
+                    });
+                }
+            });
+        }
+
+        function logout() {
+            user.leave();
+            currentUser = null;
+            updateAuthUI(false);
+            showNotification('Sesión cerrada', 'info');
+            showSection('home');
+        }
+
+        function updateAuthUI(isLoggedIn) {
+            const authButtons = document.getElementById('authButtons');
+            const userInfo = document.getElementById('userInfo');
+            const userName = document.getElementById('userName');
+            
+            if (isLoggedIn && currentUser) {
+                authButtons.classList.add('hidden');
+                userInfo.classList.remove('hidden');
+                userName.textContent = currentUser;
+            } else {
+                authButtons.classList.remove('hidden');
+                userInfo.classList.add('hidden');
+            }
+        }
+
+        // ========== SISTEMA DE NOTIFICACIONES ========== 
+        function showNotification(message, type = 'info') {
+            // Crear elemento de notificación
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};
+                color: white;
+                padding: 1rem 2rem;
+                border-radius: 8px;
+                z-index: 3000;
+                animation: slideIn 0.3s ease-out;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            `;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Remover después de 3 segundos
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // ========== SISTEMA DE CHAT ========== 
+        let chatInitialized = false;
+        
+        function initChat() {
+            if (chatInitialized) return;
+            chatInitialized = true;
+            
+            const messages = gun.get('chat');
+            const messagesContainer = document.getElementById('chatMessages');
+            
+            // Escuchar nuevos mensajes
+            messages.map().on((data, key) => {
+                if (data && data.message && data.user) {
+                    // Verificar si el mensaje ya existe
+                    if (!document.querySelector(`[data-message-id="${key}"]`)) {
+                        addMessageToChat(data.user, data.message, data.timestamp, key);
+                    }
+                }
+            });
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || !currentUser) {
+                if (!currentUser) {
+                    showNotification('Debes iniciar sesión para chatear', 'error');
+                }
+                return;
+            }
+            
+            const messageData = {
+                message: message,
+                user: currentUser,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Enviar mensaje a Gun
+            gun.get('chat').set(messageData);
+            
+            input.value = '';
+        }
+
+        function addMessageToChat(username, message, timestamp, messageId) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            messageElement.setAttribute('data-message-id', messageId);
+            
+            const time = new Date(timestamp).toLocaleTimeString();
+            messageElement.innerHTML = `
+                <strong style="color: var(--primary-gold);">${username}:</strong>
+                <p>${message}</p>
+                <small style="color: var(--text-muted); font-size: 0.8rem;">${time}</small>
+            `;
+            
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Enviar mensaje con Enter
+        document.addEventListener('DOMContentLoaded', () => {
+            const messageInput = document.getElementById('messageInput');
+            if (messageInput) {
+                messageInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                });
+            }
+        });
+
+        // ========== SISTEMA KANBAN (DRAG & DROP) ========== 
+        function initKanban() {
+            const taskCards = document.querySelectorAll('.task-card');
+            const columns = document.querySelectorAll('.kanban-column');
+            
+            // Hacer las tarjetas arrastrables
+            taskCards.forEach(card => {
+                card.draggable = true;
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', '');
+                    card.classList.add('dragging');
+                });
+                
+                card.addEventListener('dragend', () => {
+                    card.classList.remove('dragging');
+                });
+            });
+            
+            // Configurar zonas de drop
+            columns.forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.style.background = 'rgba(255, 215, 0, 0.1)';
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.style.background = '';
+                });
+                
+                column.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    column.style.background = '';
+                    
+                    const draggingCard = document.querySelector('.dragging');
+                    if (draggingCard) {
+                        column.appendChild(draggingCard);
+                        showNotification('Tarea movida exitosamente', 'success');
+                    }
+                });
+            });
+        }
+
+        // ========== EFECTOS VISUALES Y ANIMACIONES ========== 
+        function initVisualEffects() {
+            // Animación de scroll suave para elementos que entran en vista
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeIn 0.6s ease-out';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar elementos que deben animarse
+            document.querySelectorAll('.feature-card, .placeholder-content').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Efecto parallax suave en las nubes
+            let scrollY = 0;
+            window.addEventListener('scroll', () => {
+                scrollY = window.scrollY;
+                const clouds = document.querySelectorAll('.cloud');
+                clouds.forEach((cloud, index) => {
+                    const speed = 0.5 + (index * 0.1);
+                    cloud.style.transform = `translateY(${scrollY * speed}px)`;
+                });
+            });
+        }
+
+        // ========== INICIALIZACIÓN DE LA APLICACIÓN ========== 
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar componentes principales
+            initGun();
+            initNavigation();
+            initMobileNavigation();
+            initVisualEffects();
+            
+            // Configuración adicional
+            console.log('🌐 3DVR Portal inicializado correctamente');
+            console.log('📡 Gun.js conectado para funcionalidad descentralizada');
+            
+            // Easter egg para desarrolladores
+            console.log(`
+                ╔═══════════════════════════════════╗
+                ║        3DVR PORTAL v1.0           ║
+                ║   Entorno Operativo Descentralizado║
+                ║                                   ║
+                ║   Desarrollado con:               ║
+                ║   • HTML5 + CSS3 + JS Vanilla     ║
+                ║   • Gun.js para descentralización ║
+                ║   • Mobile-first responsive       ║
+                ║                                   ║
+                ║   ¡Bienvenido al futuro!          ║
+                ╚═══════════════════════════════════╝
+            `);
+        });
+
+        // ========== UTILIDADES Y HELPERS ========== 
+        
+        // Función para formatear fechas
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        
+        // Función para generar IDs únicos
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        // Función para validar email
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        // Debounce function para optimizar eventos
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // ========== MANEJO DE ERRORES GLOBAL ========== 
+        window.addEventListener('error', (e) => {
+            console.error('Error en 3DVR Portal:', e.error);
+            showNotification('Ha ocurrido un error. Por favor, recarga la página.', 'error');
+        });
+        
+        // ========== SERVICE WORKER PARA PWA (OPCIONAL) ========== 
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Comentado para esta demo, pero listo para implementar
+                // navigator.serviceWorker.register('/sw.js')
+                //     .then(registration => console.log('SW registrado'))
+                //     .catch(error => console.log('SW falló'));
+            });
+        }
+    </script>
+</body>
+</html>--text-muted);">
+                    ¿No tienes cuenta? <a href="#" onclick="showRegister()" style="color: var(--primary-gold);">Regístrate</a>
+                </p>
+            </div>
+
+            <div id="registerForm" class="hidden">
+                <h2 style="color: var(--primary-gold); text-align: center; margin-bottom: 2rem;">Crear Cuenta</h2>
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="registerUsername">Usuario</label>
+                        <input type="text" id="registerUsername" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerPassword">Contraseña</label>
+                        <input type="password" id="registerPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Crear Cuenta</button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; color: var(
