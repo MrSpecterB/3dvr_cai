@@ -1047,42 +1047,906 @@ document.addEventListener('keydown', function(event) {
 
 
         <!-- SECCIÓN TAREAS -->
-        <section id="tasks" class="section">
-            <div class="section-header">
-                <h2>✅ Gestión de Tareas</h2>
-                <p>Tablero Kanban colaborativo</p>
-            </div>
+     <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero Kanban - Gestión de Tareas</title>
+    <style>
+        :root {
+            --primary-gold: #d4af37;
+            --dark-bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-light: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --border: #404040;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --info: #3498db;
+            --todo-color: #6c757d;
+            --progress-color: #17a2b8;
+            --done-color: #28a745;
+        }
 
-            <div class="kanban-board">
-                <div class="kanban-column">
-                    <div class="kanban-header">📋 Por Hacer</div>
-                    <div class="task-card">
-                        <h4>Implementar autenticación</h4>
-                        <p>Configurar Gun.js SEA para login seguro</p>
-                    </div>
-                    <div class="task-card">
-                        <h4>Diseñar UI móvil</h4>
-                        <p>Optimizar interfaz para dispositivos móviles</p>
-                    </div>
-                </div>
-                
-                <div class="kanban-column">
-                    <div class="kanban-header">🔄 En Progreso</div>
-                    <div class="task-card">
-                        <h4>Sistema de notas</h4>
-                        <p>Desarrollo del editor rich-text</p>
-                    </div>
-                </div>
-                
-                <div class="kanban-column">
-                    <div class="kanban-header">✅ Completado</div>
-                    <div class="task-card">
-                        <h4>Estructura base</h4>
-                        <p>HTML/CSS/JS foundation completada</p>
-                    </div>
-                </div>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px solid var(--primary-gold);
+        }
+
+        .section-header h2 {
+            color: var(--primary-gold);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .board-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+
+        .btn-primary:hover {
+            background: #b8941f;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+
+        .kanban-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kanban-column {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .kanban-column.drag-over {
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .kanban-header {
+            padding: 1.5rem;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-bottom: 2px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .kanban-header.todo {
+            background: linear-gradient(135deg, var(--todo-color), #5a6268);
+            color: white;
+        }
+
+        .kanban-header.progress {
+            background: linear-gradient(135deg, var(--progress-color), #138496);
+            color: white;
+        }
+
+        .kanban-header.done {
+            background: linear-gradient(135deg, var(--done-color), #1e7e34);
+            color: white;
+        }
+
+        .task-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            font-weight: normal;
+        }
+
+        .tasks-container {
+            flex: 1;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 200px;
+        }
+
+        .task-card {
+            background: linear-gradient(135deg, #3a3a3a, #2d2d2d);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border-color: var(--primary-gold);
+        }
+
+        .task-card:active {
+            cursor: grabbing;
+        }
+
+        .task-card.dragging {
+            opacity: 0.7;
+            transform: rotate(5deg);
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .task-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .task-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .task-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .task-date {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .task-priority {
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: var(--danger);
+            color: white;
+        }
+
+        .priority-medium {
+            background: var(--warning);
+            color: white;
+        }
+
+        .priority-low {
+            background: var(--info);
+            color: white;
+        }
+
+        .task-actions {
+            display: none;
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .task-card:hover .task-actions {
+            display: flex;
+        }
+
+        .action-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 0.25rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-gold);
+            color: var(--dark-bg);
+        }
+
+        .add-task-btn {
+            margin: 1rem;
+            padding: 1rem;
+            background: transparent;
+            border: 2px dashed var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-task-btn:hover {
+            border-color: var(--primary-gold);
+            color: var(--primary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 2px solid var(--primary-gold);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--primary-gold);
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .close-btn:hover {
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            font-family: inherit;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .empty-column {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-column h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .kanban-board {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .board-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stats-container {
+                justify-content: center;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-gold), #b8941f);
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="section-header">
+        <h2>✅ Gestión de Tareas</h2>
+        <p>Tablero Kanban colaborativo</p>
+    </div>
+
+    <div class="board-controls">
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-number" id="totalTasks">0</div>
+                <div class="stat-label">Total</div>
             </div>
-        </section>
+            <div class="stat-card">
+                <div class="stat-number" id="todoTasks">0</div>
+                <div class="stat-label">Por Hacer</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="progressTasks">0</div>
+                <div class="stat-label">En Progreso</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="doneTasks">0</div>
+                <div class="stat-label">Completado</div>
+            </div>
+        </div>
+        <button class="btn btn-primary" onclick="showAddTaskModal()">
+            ➕ Nueva Tarea
+        </button>
+    </div>
+
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="kanban-board">
+        <div class="kanban-column" data-status="todo">
+            <div class="kanban-header todo">
+                <span>📋 Por Hacer</span>
+                <span class="task-count" id="todoCount">0</span>
+            </div>
+            <div class="tasks-container" id="todoTasks-container">
+                <!-- Las tareas se añadirán dinámicamente -->
+            </div>
+            <button class="add-task-btn" onclick="showAddTaskModal('todo')">
+                ➕ Añadir tarea
+            </button>
+        </div>
+
+        <div class="kanban-column" data-status="progress">
+            <div class="kanban-header progress">
+                <span>🔄 En Progreso</span>
+                <span class="task-count" id="progressCount">0</span>
+            </div>
+            <div class="tasks-container" id="progressTasks-container">
+                <!-- Las tareas se añadirán dinámicamente -->
+            </div>
+            <button class="add-task-btn" onclick="showAddTaskModal('progress')">
+                ➕ Añadir tarea
+            </button>
+        </div>
+
+        <div class="kanban-column" data-status="done">
+            <div class="kanban-header done">
+                <span>✅ Completado</span>
+                <span class="task-count" id="doneCount">0</span>
+            </div>
+            <div class="tasks-container" id="doneTasks-container">
+                <!-- Las tareas se añadirán dinámicamente -->
+            </div>
+            <button class="add-task-btn" onclick="showAddTaskModal('done')">
+                ➕ Añadir tarea
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal para agregar/editar tarea -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="taskModalTitle">Nueva Tarea</h3>
+                <button class="close-btn" onclick="closeTaskModal()">&times;</button>
+            </div>
+            <form onsubmit="saveTask(event)">
+                <div class="form-group">
+                    <label for="taskTitle">Título:</label>
+                    <input type="text" id="taskTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Descripción:</label>
+                    <textarea id="taskDescription" placeholder="Describe la tarea..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="taskPriority">Prioridad:</label>
+                    <select id="taskPriority">
+                        <option value="low">🔵 Baja</option>
+                        <option value="medium" selected>🟡 Media</option>
+                        <option value="high">🔴 Alta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskStatus">Estado:</label>
+                    <select id="taskStatus">
+                        <option value="todo">📋 Por Hacer</option>
+                        <option value="progress">🔄 En Progreso</option>
+                        <option value="done">✅ Completado</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" onclick="closeTaskModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Estado de la aplicación
+        let appState = {
+            tasks: [
+                {
+                    id: 1,
+                    title: "Implementar autenticación",
+                    description: "Configurar Gun.js SEA para login seguro",
+                    status: "todo",
+                    priority: "high",
+                    createdAt: new Date().toLocaleDateString()
+                },
+                {
+                    id: 2,
+                    title: "Diseñar UI móvil",
+                    description: "Optimizar interfaz para dispositivos móviles",
+                    status: "todo",
+                    priority: "medium",
+                    createdAt: new Date().toLocaleDateString()
+                },
+                {
+                    id: 3,
+                    title: "Sistema de notas",
+                    description: "Desarrollo del editor rich-text",
+                    status: "progress",
+                    priority: "high",
+                    createdAt: new Date().toLocaleDateString()
+                },
+                {
+                    id: 4,
+                    title: "Estructura base",
+                    description: "HTML/CSS/JS foundation completada",
+                    status: "done",
+                    priority: "medium",
+                    createdAt: new Date().toLocaleDateString()
+                }
+            ],
+            nextId: 5,
+            currentTask: null,
+            draggedTask: null
+        };
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTasks();
+            updateStats();
+            setupDragAndDrop();
+        });
+
+        // Renderizar tareas
+        function renderTasks() {
+            const containers = {
+                todo: document.getElementById('todoTasks-container'),
+                progress: document.getElementById('progressTasks-container'),
+                done: document.getElementById('doneTasks-container')
+            };
+
+            // Limpiar contenedores
+            Object.values(containers).forEach(container => {
+                container.innerHTML = '';
+            });
+
+            // Renderizar cada tarea
+            appState.tasks.forEach(task => {
+                const taskElement = createTaskElement(task);
+                containers[task.status].appendChild(taskElement);
+            });
+
+            // Mostrar mensaje si la columna está vacía
+            Object.keys(containers).forEach(status => {
+                const container = containers[status];
+                const tasksInStatus = appState.tasks.filter(task => task.status === status);
+                
+                if (tasksInStatus.length === 0) {
+                    const emptyDiv = document.createElement('div');
+                    emptyDiv.className = 'empty-column';
+                    emptyDiv.innerHTML = `
+                        <h4>Sin tareas</h4>
+                        <p>Esta columna está vacía</p>
+                    `;
+                    container.appendChild(emptyDiv);
+                }
+            });
+
+            updateStats();
+        }
+
+        // Crear elemento de tarea
+        function createTaskElement(task) {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task-card';
+            taskDiv.draggable = true;
+            taskDiv.dataset.taskId = task.id;
+
+            const priorityClass = `priority-${task.priority}`;
+            const priorityIcon = task.priority === 'high' ? '🔴' : task.priority === 'medium' ? '🟡' : '🔵';
+
+            taskDiv.innerHTML = `
+                <div class="task-header">
+                    <div>
+                        <div class="task-title">${task.title}</div>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-btn" onclick="editTask(${task.id})" title="Editar">✏️</button>
+                        <button class="action-btn" onclick="deleteTask(${task.id})" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+                <div class="task-description">${task.description}</div>
+                <div class="task-meta">
+                    <div class="task-date">
+                        📅 ${task.createdAt}
+                    </div>
+                    <div class="task-priority ${priorityClass}">
+                        ${priorityIcon} ${task.priority.toUpperCase()}
+                    </div>
+                </div>
+            `;
+
+            return taskDiv;
+        }
+
+        // Configurar drag and drop
+        function setupDragAndDrop() {
+            document.addEventListener('dragstart', handleDragStart);
+            document.addEventListener('dragover', handleDragOver);
+            document.addEventListener('drop', handleDrop);
+            document.addEventListener('dragend', handleDragEnd);
+        }
+
+        function handleDragStart(e) {
+            if (e.target.classList.contains('task-card')) {
+                appState.draggedTask = parseInt(e.target.dataset.taskId);
+                e.target.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            }
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            const column = e.target.closest('.kanban-column');
+            if (column && appState.draggedTask) {
+                column.classList.add('drag-over');
+                e.dataTransfer.dropEffect = 'move';
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const column = e.target.closest('.kanban-column');
+            
+            if (column && appState.draggedTask) {
+                const newStatus = column.dataset.status;
+                const task = appState.tasks.find(t => t.id === appState.draggedTask);
+                
+                if (task && task.status !== newStatus) {
+                    task.status = newStatus;
+                    renderTasks();
+                }
+            }
+            
+            // Limpiar estilos de drag
+            document.querySelectorAll('.kanban-column').forEach(col => {
+                col.classList.remove('drag-over');
+            });
+        }
+
+        function handleDragEnd(e) {
+            if (e.target.classList.contains('task-card')) {
+                e.target.classList.remove('dragging');
+            }
+            appState.draggedTask = null;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const stats = {
+                total: appState.tasks.length,
+                todo: appState.tasks.filter(t => t.status === 'todo').length,
+                progress: appState.tasks.filter(t => t.status === 'progress').length,
+                done: appState.tasks.filter(t => t.status === 'done').length
+            };
+
+            document.getElementById('totalTasks').textContent = stats.total;
+            document.getElementById('todoTasks').textContent = stats.todo;
+            document.getElementById('progressTasks').textContent = stats.progress;
+            document.getElementById('doneTasks').textContent = stats.done;
+
+            // Actualizar contadores en columnas
+            document.getElementById('todoCount').textContent = stats.todo;
+            document.getElementById('progressCount').textContent = stats.progress;
+            document.getElementById('doneCount').textContent = stats.done;
+
+            // Actualizar barra de progreso
+            const progressPercentage = stats.total > 0 ? (stats.done / stats.total) * 100 : 0;
+            document.getElementById('progressFill').style.width = `${progressPercentage}%`;
+        }
+
+        // Modales
+        function showAddTaskModal(status = 'todo') {
+            document.getElementById('taskModalTitle').textContent = 'Nueva Tarea';
+            document.getElementById('taskTitle').value = '';
+            document.getElementById('taskDescription').value = '';
+            document.getElementById('taskPriority').value = 'medium';
+            document.getElementById('taskStatus').value = status;
+            appState.currentTask = null;
+            document.getElementById('taskModal').classList.add('show');
+        }
+
+        function editTask(taskId) {
+            const task = appState.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            document.getElementById('taskModalTitle').textContent = 'Editar Tarea';
+            document.getElementById('taskTitle').value = task.title;
+            document.getElementById('taskDescription').value = task.description;
+            document.getElementById('taskPriority').value = task.priority;
+            document.getElementById('taskStatus').value = task.status;
+            appState.currentTask = taskId;
+            document.getElementById('taskModal').classList.add('show');
+        }
+
+        function closeTaskModal() {
+            document.getElementById('taskModal').classList.remove('show');
+            appState.currentTask = null;
+        }
+
+        function saveTask(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('taskTitle').value.trim();
+            const description = document.getElementById('taskDescription').value.trim();
+            const priority = document.getElementById('taskPriority').value;
+            const status = document.getElementById('taskStatus').value;
+
+            if (!title) return;
+
+            if (appState.currentTask) {
+                // Editar tarea existente
+                const task = appState.tasks.find(t => t.id === appState.currentTask);
+                if (task) {
+                    task.title = title;
+                    task.description = description;
+                    task.priority = priority;
+                    task.status = status;
+                }
+            } else {
+                // Crear nueva tarea
+                appState.tasks.push({
+                    id: appState.nextId++,
+                    title,
+                    description,
+                    priority,
+                    status,
+                    createdAt: new Date().toLocaleDateString()
+                });
+            }
+
+            renderTasks();
+            closeTaskModal();
+        }
+
+        function deleteTask(taskId) {
+            const task = appState.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            if (confirm(`¿Estás seguro de eliminar la tarea "${task.title}"?`)) {
+                appState.tasks = appState.tasks.filter(t => t.id !== taskId);
+                renderTasks();
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('show');
+            }
+        });
+
+        // Atajos de teclado
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'n') {
+                event.preventDefault();
+                showAddTaskModal();
+            }
+            if (event.key === 'Escape') {
+                closeTaskModal();
+            }
+        });
+
+        // Funciones adicionales para completar tareas rápidamente
+        function markAsCompleted(taskId) {
+            const task = appState.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = 'done';
+                renderTasks();
+            }
+        }
+
+        function markAsInProgress(taskId) {
+            const task = appState.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.status = 'progress';
+                renderTasks();
+            }
+        }
+    </script>
+</body>
+</html>
 
         <!-- SECCIÓN HUB -->
         <section id="hub" class="section">
