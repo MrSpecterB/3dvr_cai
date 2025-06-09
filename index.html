@@ -669,53 +669,95 @@
         </section>
 
         <!-- SECCIÓN NOTAS -->
-        <section id="notes" class="section">
-            <div class="section-header">
-                <h2>📝 Notas Personales</h2>
-                <p>Organiza tus ideas con estructura jerárquica</p>
-            </div>
+       <!-- SECCIÓN NOTAS - ACTUALIZADA -->
+<section id="notes" class="section">
+  <div class="section-header">
+    <h2>📝 Notas Personales</h2>
+    <p>Organiza tus ideas con estructura jerárquica</p>
+  </div>
 
-            <div class="notes-sidebar">
-                <h3 style="color: var(--primary-gold); margin-bottom: 1rem;">📁 Carpetas</h3>
-                <ul class="folder-tree">
-                    <li class="folder-item active">📂 Proyectos</li>
-                    <li class="folder-item">📂 Ideas</li>
-                    <li class="folder-item">📂 Reuniones</li>
-                    <li class="folder-item">📂 Personal</li>
-                </ul>
-            </div>
+  <div class="notes-container">
+    <div class="notes-sidebar">
+      <div class="sidebar-header">
+        <h3>📁 Carpetas</h3>
+        <button class="btn btn-primary btn-small" onclick="showAddFolderModal()">+ Nueva</button>
+      </div>
+      <ul class="folder-tree" id="folderTree">
+        <!-- Las carpetas se generarán dinámicamente -->
+      </ul>
+    </div>
 
-            <div class="placeholder-content">
-                <h3>Editor de Notas</h3>
-                <p>Próximamente: Editor rich-text con soporte para markdown, sincronización en tiempo real y organización por carpetas colapsables.</p>
-                <button class="btn btn-primary">Crear Nueva Nota</button>
-            </div>
-        </section>
+    <div class="main-content">
+      <div class="content-header">
+        <div>
+          <h3 id="currentFolderName">Selecciona una carpeta</h3>
+        </div>
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <input type="text" class="search-box" placeholder="Buscar notas..." id="searchInput" onkeyup="searchNotes()">
+          <button class="btn btn-primary" onclick="showAddNoteModal()" id="addNoteBtn" disabled>+ Nueva Nota</button>
+        </div>
+      </div>
+      <div class="notes-list" id="notesList">
+        <div class="empty-state">
+          <h3>🗂️ Selecciona una carpeta</h3>
+          <p>Elige una carpeta de la barra lateral para ver sus notas o crear nuevas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- SECCIÓN CHAT -->
-        <section id="chat" class="section">
-            <div class="section-header">
-                <h2>💬 Chat Grupal</h2>
-                <p>Comunicación en tiempo real descentralizada</p>
-            </div>
+  <!-- Modales -->
+  <div class="modal" id="folderModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="folderModalTitle">Nueva Carpeta</h3>
+        <button class="close-btn" onclick="closeFolderModal()">&times;</button>
+      </div>
+      <form onsubmit="saveFolderModal(event)">
+        <div class="form-group">
+          <label for="folderName">Nombre de la carpeta:</label>
+          <input type="text" id="folderName" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeFolderModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-            <div class="chat-container">
-                <div class="chat-messages" id="chatMessages">
-                    <div class="message">
-                        <strong style="color: var(--primary-gold);">Sistema:</strong>
-                        <p>Bienvenido al chat descentralizado de 3DVR Portal</p>
-                    </div>
-                    <div class="message">
-                        <strong style="color: var(--primary-gold);">Demo User:</strong>
-                        <p>¡Hola! Esta es una demostración del sistema de chat.</p>
-                    </div>
-                </div>
-                <div class="chat-input">
-                    <input type="text" placeholder="Escribe tu mensaje..." id="messageInput">
-                    <button class="btn btn-primary" onclick="sendMessage()">Enviar</button>
-                </div>
-            </div>
-        </section>
+  <div class="modal" id="noteModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="noteModalTitle">Nueva Nota</h3>
+        <button class="close-btn" onclick="closeNoteModal()">&times;</button>
+      </div>
+      <form onsubmit="saveNoteModal(event)">
+        <div class="form-group">
+          <label for="noteTitle">Título:</label>
+          <input type="text" id="noteTitle" required>
+        </div>
+        <div class="form-group">
+          <label for="noteContent">Contenido:</label>
+          <textarea id="noteContent" placeholder="Escribe tu nota aquí..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn" onclick="closeNoteModal()">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Scripts del sistema de notas (añadir al final del body de index.html) -->
+<script>
+// Copia aquí el script de notes_app.html para funcionamiento total
+// (ya incluido en el archivo original que me diste)
+</script>
+
+<!-- Estilos adicionales de notes_app.html pueden integrarse al CSS global -->
+
 
         <!-- SECCIÓN TAREAS -->
         <section id="tasks" class="section">
