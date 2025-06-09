@@ -752,6 +752,293 @@
 
 <!-- Scripts del sistema de notas (añadir al final del body de index.html) -->
 <script>
+// Estado de la aplicación
+let appState = {
+    folders: [
+        { id: 1, name: '📂 Proyectos', notes: [] },
+        { id: 2, name: '📂 Ideas', notes: [] },
+        { id: 3, name: '📂 Reuniones', notes: [] },
+        { id: 4, name: '📂 Personal', notes: [] }
+    ],
+    currentFolder: null,
+    currentNote: null,
+    nextFolderId: 5,
+    nextNoteId: 1
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    renderFolders();
+});
+
+// ========== FOLDERS ==========
+function renderFolders() {
+    const folderTree = document.getElementById('folderTree');
+    folderTree.innerHTML = '';
+
+    appState.folders.forEach(folder => {
+        const li = document.createElement('li');
+        li.className = `folder-item ${appState.currentFolder && appState.currentFolder.id === folder.id ? 'active' : ''}`;
+        li.innerHTML = `
+            <span onclick="selectFolder(${folder.id})">${folder.name}</span>
+            <div class="folder-actions">
+                <button class="btn btn-primary btn-small" onclick="editFolder(${folder.id})">✏️</button>
+                <button class="btn btn-danger btn-small" onclick="deleteFolder(${folder.id})">🗑️</button>
+            </div>
+        `;
+        li.draggable = true;
+        li.addEventListener('dragover', handleDragOver);
+        li.addEventListener('drop', handleDrop);
+        folderTree.appendChild(li);
+    });
+}
+
+function selectFolder(folderId) {
+    appState.currentFolder = appState.folders.find(f => f.id === folderId);
+    document.getElementById('currentFolderName').textContent = appState.currentFolder.name;
+    document.getElementById('addNoteBtn').disabled = false;
+    renderFolders();
+    renderNotes();
+}
+
+// ========== NOTES ==========
+function renderNotes() {
+    const notesList = document.getElementById('notesList');
+    
+    if (!appState.currentFolder) {
+        notesList.innerHTML = `
+            <div class="empty-state">
+                <h3>🗂️ Selecciona una carpeta</h3>
+                <p>Elige una carpeta de la barra lateral para ver sus notas o crear nuevas.</p>
+            </div>
+        `;
+        return;
+    }
+
+    let notesToShow = appState.currentFolder.notes;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    
+    if (searchTerm) {
+        notesToShow = notesToShow.filter(note => 
+            note.title.toLowerCase().includes(searchTerm) || 
+            note.content.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    if (notesToShow.length === 0) {
+        notesList.innerHTML = `
+            <div class="empty-state">
+                <h3>📄 No hay notas</h3>
+                <p>Esta carpeta está vacía. ¡Crea tu primera nota!</p>
+            </div>
+        `;
+        return;
+    }
+
+    notesList.innerHTML = '';
+    notesToShow.forEach(note => {
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'note-item';
+        noteDiv.draggable = true;
+        noteDiv.addEventListener('dragstart', (e) => handleNoteDragStart(e, note.id));
+        noteDiv.innerHTML = `
+            <div class="note-header">
+                <div class="note-title">${note.title}</div>
+                <div class="note-date">${note.date}</div>
+            </div>
+            <div class="note-preview">${note.content.substring(0, 100)}${note.content.length > 100 ? '...' : ''}</div>
+            <div class="note-actions">
+                <button class="btn btn-primary btn-small" onclick="editNote(${note.id})">✏️ Editar</button>
+                <button class="btn btn-danger btn-small" onclick="deleteNote(${note.id})">🗑️ Borrar</button>
+            </div>
+        `;
+        notesList.appendChild(noteDiv);
+    });
+}
+
+function searchNotes() {
+    renderNotes();
+}
+
+// ========== MODALES ==========
+function showAddFolderModal() {
+    document.getElementById('folderModalTitle').textContent = 'Nueva Carpeta';
+    document.getElementById('folderName').value = '';
+    appState.currentNote = null;
+    document.getElementById('folderModal').classList.add('show');
+}
+
+function showAddNoteModal() {
+    if (!appState.currentFolder) return;
+    document.getElementById('noteModalTitle').textContent = 'Nueva Nota';
+    document.getElementById('noteTitle').value = '';
+    document.getElementById('noteContent').value = '';
+    appState.currentNote = null;
+    document.getElementById('noteModal').classList.add('show');
+}
+
+function editFolder(folderId) {
+    const folder = appState.folders.find(f => f.id === folderId);
+    document.getElementById('folderModalTitle').textContent = 'Editar Carpeta';
+    document.getElementById('folderName').value = folder.name;
+    appState.currentNote = { type: 'folder', id: folderId };
+    document.getElementById('folderModal').classList.add('show');
+}
+
+function editNote(noteId) {
+    const note = appState.currentFolder.notes.find(n => n.id === noteId);
+    document.getElementById('noteModalTitle').textContent = 'Editar Nota';
+    document.getElementById('noteTitle').value = note.title;
+    document.getElementById('noteContent').value = note.content;
+    appState.currentNote = { type: 'note', id: noteId };
+    document.getElementById('noteModal').classList.add('show');
+}
+
+function closeFolderModal() {
+    document.getElementById('folderModal').classList.remove('show');
+}
+
+function closeNoteModal() {
+    document.getElementById('noteModal').classList.remove('show');
+}
+
+function saveFolderModal(event) {
+    event.preventDefault();
+    const name = document.getElementById('folderName').value.trim();
+    if (!name) return;
+
+    const exists = appState.folders.some(f => 
+        f.name.toLowerCase() === name.toLowerCase() &&
+        (!appState.currentNote || f.id !== appState.currentNote.id)
+    );
+
+    if (exists) {
+        alert('Ya existe una carpeta con ese nombre');
+        return;
+    }
+
+    if (appState.currentNote && appState.currentNote.type === 'folder') {
+        const folder = appState.folders.find(f => f.id === appState.currentNote.id);
+        folder.name = name;
+    } else {
+        appState.folders.push({
+            id: appState.nextFolderId++,
+            name: name,
+            notes: []
+        });
+    }
+
+    renderFolders();
+    closeFolderModal();
+}
+
+function saveNoteModal(event) {
+    event.preventDefault();
+    const title = document.getElementById('noteTitle').value.trim();
+    const content = document.getElementById('noteContent').value.trim();
+    if (!title) return;
+
+    if (appState.currentNote && appState.currentNote.type === 'note') {
+        const note = appState.currentFolder.notes.find(n => n.id === appState.currentNote.id);
+        note.title = title;
+        note.content = content;
+        note.date = new Date().toLocaleDateString();
+    } else {
+        appState.currentFolder.notes.push({
+            id: appState.nextNoteId++,
+            title: title,
+            content: content,
+            date: new Date().toLocaleDateString()
+        });
+    }
+
+    renderNotes();
+    closeNoteModal();
+}
+
+function deleteFolder(folderId) {
+    const folder = appState.folders.find(f => f.id === folderId);
+    const notesCount = folder.notes.length;
+    const msg = notesCount > 0
+        ? `¿Estás seguro de eliminar la carpeta "${folder.name}" y sus ${notesCount} nota(s)?`
+        : `¿Estás seguro de eliminar la carpeta "${folder.name}"?`;
+    if (!confirm(msg)) return;
+
+    appState.folders = appState.folders.filter(f => f.id !== folderId);
+    if (appState.currentFolder && appState.currentFolder.id === folderId) {
+        appState.currentFolder = null;
+        document.getElementById('currentFolderName').textContent = 'Selecciona una carpeta';
+        document.getElementById('addNoteBtn').disabled = true;
+        renderNotes();
+    }
+    renderFolders();
+}
+
+function deleteNote(noteId) {
+    const note = appState.currentFolder.notes.find(n => n.id === noteId);
+    if (!confirm(`¿Estás seguro de eliminar la nota "${note.title}"?`)) return;
+
+    appState.currentFolder.notes = appState.currentFolder.notes.filter(n => n.id !== noteId);
+    renderNotes();
+}
+
+// ========== DRAG & DROP ==========
+let draggedNoteId = null;
+
+function handleNoteDragStart(event, noteId) {
+    draggedNoteId = noteId;
+    event.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    this.classList.add('dragover');
+}
+
+function handleDrop(event) {
+    event.preventDefault();
+    this.classList.remove('dragover');
+
+    if (!draggedNoteId) return;
+
+    const span = this.querySelector('span');
+    const folderName = span?.textContent || '';
+    const targetFolder = appState.folders.find(f => f.name === folderName);
+    const sourceFolder = appState.currentFolder;
+
+    if (targetFolder && sourceFolder && targetFolder.id !== sourceFolder.id) {
+        const noteIndex = sourceFolder.notes.findIndex(n => n.id === draggedNoteId);
+        if (noteIndex !== -1) {
+            const note = sourceFolder.notes.splice(noteIndex, 1)[0];
+            targetFolder.notes.push(note);
+            renderNotes();
+        }
+    }
+
+    draggedNoteId = null;
+}
+
+// ========== OTROS ==========
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('modal')) {
+        event.target.classList.remove('show');
+    }
+});
+
+document.addEventListener('keydown', function(event) {
+    if (event.ctrlKey && event.key === 'n') {
+        event.preventDefault();
+        if (appState.currentFolder) {
+            showAddNoteModal();
+        }
+    }
+    if (event.key === 'Escape') {
+        closeFolderModal();
+        closeNoteModal();
+    }
+});
+</script>
+
 // Copia aquí el script de notes_app.html para funcionamiento total
 // (ya incluido en el archivo original que me diste)
 </script>
